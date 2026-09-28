@@ -32,7 +32,12 @@ class AppSettings: ObservableObject {
     @AppStorage("defaultRetention") var defaultRetentionRawValue: Int = RetentionPeriod.oneWeek.rawValue
     @AppStorage("showItemCount") var showItemCount: Bool = true
     
+    // Freemium State
+    @AppStorage("isPro") var isPro: Bool = false
+    @AppStorage("licenseKey") var licenseKey: String = ""
+    
     var defaultRetention: RetentionPeriod {
-        RetentionPeriod(rawValue: defaultRetentionRawValue) ?? .oneWeek
+        if !isPro { return .oneDay }
+        return RetentionPeriod(rawValue: defaultRetentionRawValue) ?? .oneDay
     }
 }

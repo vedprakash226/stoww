@@ -9,8 +9,19 @@ struct LaterBinView: View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Text("LaterBin")
+                Text("Stow")
                     .font(.headline)
+                
+                if settings.isPro {
+                    Text("PRO")
+                        .font(.system(size: 9, weight: .black))
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 2)
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(4)
+                }
+                
                 Spacer()
                 Button(action: { addFile() }) {
                     Image(systemName: "plus")
@@ -19,17 +30,30 @@ struct LaterBinView: View {
                 .help("Add file manually")
                 
                 Menu {
-                    Text("Default Retention")
-                        .font(.caption)
-                    
-                    Picker("Retention", selection: $settings.defaultRetentionRawValue) {
-                        ForEach(RetentionPeriod.allCases) { period in
-                            Text(period.label).tag(period.rawValue)
+                    if settings.isPro {
+                        Text("Stow Pro Active ✦")
+                            .font(.caption)
+                        Divider()
+                        Text("Default Retention")
+                            .font(.caption)
+                        
+                        Picker("Retention", selection: $settings.defaultRetentionRawValue) {
+                            ForEach(RetentionPeriod.allCases) { period in
+                                Text(period.label).tag(period.rawValue)
+                            }
                         }
+                        .pickerStyle(InlinePickerStyle())
+                        Divider()
+                    } else {
+                        Button(action: { viewModel.showUpgradeModal = true }) {
+                            Text("Retention: 1 Day (Pro to unlock)")
+                        }
+                        Divider()
+                        Button(action: { viewModel.showUpgradeModal = true }) {
+                            Label("Upgrade to Stow Pro...", systemImage: "star.fill")
+                        }
+                        Divider()
                     }
-                    .pickerStyle(InlinePickerStyle())
-                    
-                    Divider()
                     
                     Toggle("Show item count in menu bar", isOn: $settings.showItemCount)
                 } label: {
@@ -88,7 +112,11 @@ struct LaterBinView: View {
         }
         .frame(width: 400, height: 450)
         .onDrop(of: [.fileURL], isTargeted: $viewModel.isHovering) { providers in
-            return viewModel.handleDrop(providers: providers, retention: settings.defaultRetention)
+            return viewModel.handleDrop(providers: providers, retention: settings.defaultRetention, isPro: settings.isPro)
+        }
+        .sheet(isPresented: $viewModel.showUpgradeModal) {
+            StowProView(isPresented: $viewModel.showUpgradeModal)
+                .environmentObject(settings)
         }
     }
     
@@ -99,7 +127,7 @@ struct LaterBinView: View {
         panel.allowsMultipleSelection = true
         if panel.runModal() == .OK {
             for url in panel.urls {
-                viewModel.addFile(url: url, retention: settings.defaultRetention)
+                viewModel.addFile(url: url, retention: settings.defaultRetention, isPro: settings.isPro)
             }
         }
     }

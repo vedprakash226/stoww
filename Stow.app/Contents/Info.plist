@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>LaterBin</string>
+    <string>Stow</string>
     <key>CFBundleIdentifier</key>
-    <string>com.example.laterbin</string>
+    <string>com.example.stow</string>
     <key>CFBundleName</key>
-    <string>LaterBin</string>
+    <string>Stow</string>
     <key>CFBundleIconFile</key>
     <string>AppIcon</string>
     <key>CFBundleShortVersionString</key>

@@ -1,11 +1,12 @@
 #!/bin/bash
 set -e
 
-APP_NAME="LaterBin"
+APP_NAME="Stow"
 APP_DIR="$APP_NAME.app"
 CONTENTS_DIR="$APP_DIR/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
+DMG_NAME="$APP_NAME.dmg"
 
 echo "Building Swift Source via swiftc (bypassing SPM Sandbox)..."
 mkdir -p .module-cache
@@ -38,7 +39,7 @@ echo "Copying executable..."
 mv "$APP_NAME" "$MACOS_DIR/$APP_NAME"
 
 echo "Creating Info.plist..."
-cat > "$CONTENTS_DIR/Info.plist" <<EOF
+cat > "$CONTENTS_DIR/Info.plist" <<PLIST_EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -46,7 +47,7 @@ cat > "$CONTENTS_DIR/Info.plist" <<EOF
     <key>CFBundleExecutable</key>
     <string>$APP_NAME</string>
     <key>CFBundleIdentifier</key>
-    <string>com.example.laterbin</string>
+    <string>com.example.stow</string>
     <key>CFBundleName</key>
     <string>$APP_NAME</string>
     <key>CFBundleIconFile</key>
@@ -61,6 +62,18 @@ cat > "$CONTENTS_DIR/Info.plist" <<EOF
     <true/>
 </dict>
 </plist>
-EOF
+PLIST_EOF
 
-echo "Done! App created at $APP_DIR"
+echo "Signing App Bundle (Ad-hoc)..."
+codesign --force --deep --sign - "$APP_DIR"
+
+echo "Packaging into $DMG_NAME..."
+rm -f "$DMG_NAME"
+rm -rf build_dmg
+mkdir -p build_dmg/Stow
+cp -a "$APP_DIR" build_dmg/Stow/
+ln -s /Applications build_dmg/Stow/Applications
+hdiutil create -volname "Stow" -srcfolder build_dmg/Stow -ov -format UDZO "$DMG_NAME" > /dev/null
+rm -rf build_dmg
+
+echo "Done! App created at $APP_DIR and packaged as $DMG_NAME"

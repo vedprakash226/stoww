@@ -49,7 +49,7 @@ struct EdgeDropView: View {
         .frame(width: 240, height: 240)
         .animation(.spring(response: 0.4, dampingFraction: 0.7), value: viewModel.isEdgeTargeted)
         .onDrop(of: [.fileURL], isTargeted: $viewModel.isEdgeTargeted) { providers in
-            let handled = viewModel.handleDrop(providers: providers, retention: settings.defaultRetention)
+            let handled = viewModel.handleDrop(providers: providers, retention: settings.defaultRetention, isPro: settings.isPro)
             if handled {
                 NotificationCenter.default.post(name: NSNotification.Name("HideEdgeWindow"), object: nil)
             }

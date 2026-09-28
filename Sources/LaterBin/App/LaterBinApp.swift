@@ -82,6 +82,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(hideNotchWindow), name: NSNotification.Name("HideNotchWindow"), object: nil)
+        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("ShowProSuccess"), object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in
+                self?.positionNotchWindow()
+                self?.notchWindow?.makeKeyAndOrderFront(nil)
+                
+                // Wait for the transparent NSWindow to physically render on screen
+                try? await Task.sleep(nanoseconds: 100_000_000)
+                self?.viewModel.showProSuccess = true
+                
+                // Show for 3 seconds
+                try? await Task.sleep(nanoseconds: 3_000_000_000)
+                self?.viewModel.showProSuccess = false
+                
+                // Wait for SwiftUI slide-up animation to complete before destroying the window
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                self?.hideNotchWindow()
+            }
+        }
     }
     
     func positionNotchWindow() {

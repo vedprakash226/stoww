@@ -7,12 +7,14 @@ class LaterBinViewModel: ObservableObject {
     @Published var items: [LaterBinItem] = []
     @Published var isHovering = false
     @Published var isEdgeTargeted = false
+    @Published var showUpgradeModal = false
+    @Published var showProSuccess = false
     
     private let saveURL: URL
     
     init() {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let appDirectory = appSupport.appendingPathComponent("LaterBin")
+        let appDirectory = appSupport.appendingPathComponent("Stow")
         try? FileManager.default.createDirectory(at: appDirectory, withIntermediateDirectories: true)
         saveURL = appDirectory.appendingPathComponent("items.json")
     }
@@ -52,7 +54,12 @@ class LaterBinViewModel: ObservableObject {
         }
     }
     
-    func addFile(url: URL, retention: RetentionPeriod) {
+    func addFile(url: URL, retention: RetentionPeriod, isPro: Bool) {
+        if !isPro && items.count >= 3 {
+            showUpgradeModal = true
+            return
+        }
+        
         if items.contains(where: { $0.lastKnownURL?.path == url.path }) {
             print("Item already in LaterBin")
             return
@@ -81,7 +88,7 @@ class LaterBinViewModel: ObservableObject {
         saveItems()
     }
     
-    func handleDrop(providers: [NSItemProvider], retention: RetentionPeriod) -> Bool {
+    func handleDrop(providers: [NSItemProvider], retention: RetentionPeriod, isPro: Bool) -> Bool {
         // Bulletproof Native macOS Approach:
         // Read directly from the drag pasteboard synchronously.
         // This avoids SwiftUI NSItemProvider async cancellation bugs and @Sendable warnings entirely.
@@ -89,7 +96,7 @@ class LaterBinViewModel: ObservableObject {
         if let urls = pasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL], !urls.isEmpty {
             for url in urls {
                 // adding is synchronous and safe
-                self.addFile(url: url, retention: retention)
+                self.addFile(url: url, retention: retention, isPro: isPro)
             }
             return true
         }
@@ -99,7 +106,7 @@ class LaterBinViewModel: ObservableObject {
             var handled = false
             for item in items {
                 if let stringData = item.string(forType: .fileURL), let url = URL(string: stringData) {
-                    self.addFile(url: url, retention: retention)
+                    self.addFile(url: url, retention: retention, isPro: isPro)
                     handled = true
                 }
             }

@@ -7,13 +7,39 @@ struct NotchDropView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            if viewModel.isEdgeTargeted {
+            if viewModel.showProSuccess {
+                VStack(spacing: 12) {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 40))
+                        .foregroundColor(.green)
+                    
+                    Text("Stow Pro Unlocked!")
+                        .font(.headline)
+                        .foregroundColor(.green)
+                        .multilineTextAlignment(.center)
+                }
+                .frame(width: 240, height: 180)
+                .background(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(Color(NSColor.windowBackgroundColor).opacity(0.95))
+                        .shadow(color: Color.black.opacity(0.4), radius: 20, x: 0, y: 15)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(Color.green.opacity(0.3), lineWidth: 1)
+                )
+                .transition(.asymmetric(
+                    insertion: .move(edge: .top).combined(with: .scale(scale: 0.8)).combined(with: .opacity),
+                    removal: .move(edge: .top).combined(with: .scale(scale: 0.8)).combined(with: .opacity)
+                ))
+                .padding(.top, 15)
+            } else if viewModel.isEdgeTargeted {
                 VStack(spacing: 12) {
                     Image(systemName: "tray.and.arrow.down.fill")
                         .font(.system(size: 36))
                         .foregroundColor(Color.accentColor)
                     
-                    Text("Drop to save in LaterBin")
+                    Text("Drop to save in Stow")
                         .font(.headline)
                         .multilineTextAlignment(.center)
                 }
@@ -44,8 +70,9 @@ struct NotchDropView: View {
         .frame(width: 260, height: 240, alignment: .top)
         .contentShape(Rectangle())
         .animation(.spring(response: 0.4, dampingFraction: 0.7), value: viewModel.isEdgeTargeted)
+        .animation(.spring(response: 0.4, dampingFraction: 0.7), value: viewModel.showProSuccess)
         .onDrop(of: [.fileURL, .item], isTargeted: $viewModel.isEdgeTargeted) { providers in
-            let handled = viewModel.handleDrop(providers: providers, retention: settings.defaultRetention)
+            let handled = viewModel.handleDrop(providers: providers, retention: settings.defaultRetention, isPro: settings.isPro)
             if handled {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     NotificationCenter.default.post(name: NSNotification.Name("HideNotchWindow"), object: nil)
