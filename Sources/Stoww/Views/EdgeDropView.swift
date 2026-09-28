@@ -2,7 +2,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct SideDropView: View {
-    @EnvironmentObject var viewModel: StowViewModel
+    @EnvironmentObject var viewModel: StowwwViewModel
     @EnvironmentObject var settings: AppSettings
     
     let isLeft: Bool
@@ -33,7 +33,7 @@ struct SideDropView: View {
                             .font(.system(size: 36))
                             .foregroundColor(Color.accentColor)
                         
-                        Text("Drop to save in Stow")
+                        Text("Drop to save in Stoww")
                             .font(.headline)
                             .multilineTextAlignment(.center)
                     }

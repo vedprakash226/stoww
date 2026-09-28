@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-APP_NAME="Stow"
+APP_NAME="Stoww"
 APP_DIR="$APP_NAME.app"
 CONTENTS_DIR="$APP_DIR/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
@@ -47,7 +47,7 @@ cat > "$CONTENTS_DIR/Info.plist" <<PLIST_EOF
     <key>CFBundleExecutable</key>
     <string>$APP_NAME</string>
     <key>CFBundleIdentifier</key>
-    <string>com.example.stow</string>
+    <string>com.example.stoww</string>
     <key>CFBundleName</key>
     <string>$APP_NAME</string>
     <key>CFBundleIconFile</key>
@@ -70,10 +70,10 @@ codesign --force --deep --sign - "$APP_DIR"
 echo "Packaging into $DMG_NAME..."
 rm -f "$DMG_NAME"
 rm -rf build_dmg
-mkdir -p build_dmg/Stow
-cp -a "$APP_DIR" build_dmg/Stow/
-ln -s /Applications build_dmg/Stow/Applications
-hdiutil create -volname "Stow" -srcfolder build_dmg/Stow -ov -format UDZO "$DMG_NAME" > /dev/null
+mkdir -p build_dmg/Stoww
+cp -a "$APP_DIR" build_dmg/Stoww/
+ln -s /Applications build_dmg/Stoww/Applications
+hdiutil create -volname "Stoww" -srcfolder build_dmg/Stoww -ov -format UDZO "$DMG_NAME" > /dev/null
 rm -rf build_dmg
 
 echo "Done! App created at $APP_DIR and packaged as $DMG_NAME"

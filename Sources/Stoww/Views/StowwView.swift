@@ -1,15 +1,15 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct StowView: View {
-    @EnvironmentObject var viewModel: StowViewModel
+struct StowwwView: View {
+    @EnvironmentObject var viewModel: StowwwViewModel
     @EnvironmentObject var settings: AppSettings
     
     var body: some View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Text("Stow")
+                Text("Stoww")
                     .font(.headline)
                 
                 if settings.isPro {
@@ -31,7 +31,7 @@ struct StowView: View {
                 
                 Menu {
                     if settings.isPro {
-                        Text("Stow Pro Active ✦")
+                        Text("Stowww Pro Active ✦")
                             .font(.caption)
                         Divider()
                         Text("Default Retention")
@@ -59,7 +59,7 @@ struct StowView: View {
                         }
                         Divider()
                         Button(action: { viewModel.showUpgradeModal = true }) {
-                            Label("Upgrade to Stow Pro...", systemImage: "star.fill")
+                            Label("Upgrade to Stowww Pro...", systemImage: "star.fill")
                         }
                         Divider()
                     }
@@ -77,7 +77,7 @@ struct StowView: View {
                     Image(systemName: "power")
                 }
                 .buttonStyle(PlainButtonStyle())
-                .help("Quit Stow")
+                .help("Quit Stoww")
             }
             .padding()
             .background(Color(NSColor.windowBackgroundColor))
@@ -124,7 +124,7 @@ struct StowView: View {
             return viewModel.handleDrop(providers: providers, retention: settings.defaultRetention, isPro: settings.isPro)
         }
         .sheet(isPresented: $viewModel.showUpgradeModal) {
-            StowProView(isPresented: $viewModel.showUpgradeModal)
+            StowwwProView(isPresented: $viewModel.showUpgradeModal)
                 .environmentObject(settings)
         }
     }

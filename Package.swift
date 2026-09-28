@@ -2,15 +2,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "Stow",
+    name: "Stoww",
     platforms: [
         .macOS(.v14)
     ],
     targets: [
         .executableTarget(
-            name: "Stow",
+            name: "Stoww",
             dependencies: [],
-            path: "Sources/Stow"
+            path: "Sources/Stoww"
         ),
     ]
 )

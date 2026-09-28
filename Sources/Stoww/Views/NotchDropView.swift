@@ -2,7 +2,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct NotchDropView: View {
-    @EnvironmentObject var viewModel: StowViewModel
+    @EnvironmentObject var viewModel: StowwwViewModel
     @EnvironmentObject var settings: AppSettings
     
     var body: some View {
@@ -13,7 +13,7 @@ struct NotchDropView: View {
                         .font(.system(size: 36))
                         .foregroundColor(Color.accentColor)
                     
-                    Text("Drop to save in Stow")
+                    Text("Drop to save in Stoww")
                         .font(.headline)
                         .multilineTextAlignment(.center)
                 }

@@ -3,8 +3,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 @MainActor
-class StowViewModel: ObservableObject {
-    @Published var items: [StowItem] = []
+class StowwwViewModel: ObservableObject {
+    @Published var items: [StowwwItem] = []
     @Published var isHovering = false
     @Published var isNotchTargeted = false
     @Published var isLeftTargeted = false
@@ -15,7 +15,7 @@ class StowViewModel: ObservableObject {
     
     init() {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let appDirectory = appSupport.appendingPathComponent("Stow")
+        let appDirectory = appSupport.appendingPathComponent("Stoww")
         try? FileManager.default.createDirectory(at: appDirectory, withIntermediateDirectories: true)
         saveURL = appDirectory.appendingPathComponent("items.json")
     }
@@ -27,7 +27,7 @@ class StowViewModel: ObservableObject {
     
     private func loadItems() {
         guard let data = try? Data(contentsOf: saveURL) else { return }
-        if let decoded = try? JSONDecoder().decode([StowItem].self, from: data) {
+        if let decoded = try? JSONDecoder().decode([StowwwItem].self, from: data) {
             self.items = decoded.sorted(by: { $0.createdAt > $1.createdAt })
         }
     }
@@ -62,14 +62,14 @@ class StowViewModel: ObservableObject {
         }
         
         if items.contains(where: { $0.lastKnownURL?.path == url.path }) {
-            print("Item already in Stow")
+            print("Item already in Stoww")
             return
         }
         
         do {
             let bookmark = try FileReferenceService.shared.createBookmark(for: url)
             let isDir = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
-            let item = StowItem(
+            let item = StowwwItem(
                 displayName: url.lastPathComponent,
                 bookmarkData: bookmark,
                 lastKnownURL: url,
@@ -84,7 +84,7 @@ class StowViewModel: ObservableObject {
         }
     }
     
-    func remove(item: StowItem) {
+    func remove(item: StowwwItem) {
         items.removeAll { $0.id == item.id }
         saveItems()
     }

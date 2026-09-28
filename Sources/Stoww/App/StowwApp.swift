@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 
 @main
-struct StowApp: App {
+struct StowwwApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
@@ -18,12 +18,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
     var popover: NSPopover!
     var settings = AppSettings()
-    var viewModel = StowViewModel()
+    var viewModel = StowwwViewModel()
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         viewModel.setup()
         
-        let contentView = StowView()
+        let contentView = StowwwView()
             .environmentObject(settings)
             .environmentObject(viewModel)
         
@@ -34,7 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "tray", accessibilityDescription: "Stow")
+            button.image = NSImage(systemSymbolName: "tray", accessibilityDescription: "Stoww")
             button.action = #selector(togglePopover)
         }
         

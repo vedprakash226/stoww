@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct StowProView: View {
+struct StowwwProView: View {
     @Binding var isPresented: Bool
     @EnvironmentObject var settings: AppSettings
-    @EnvironmentObject var viewModel: StowViewModel
+    @EnvironmentObject var viewModel: StowwwViewModel
     
     @State private var inputKey = ""
     @State private var statusMessage = ""
@@ -21,7 +21,7 @@ struct StowProView: View {
                         LinearGradient(colors: [.yellow, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
                     )
                 
-                Text("Get Stow Pro")
+                Text("Get Stowww Pro")
                     .font(.system(size: 32, weight: .bold))
                 
                 Text("One-time payment. Yours forever.")
@@ -31,7 +31,7 @@ struct StowProView: View {
             
             // Feature List
             VStack(alignment: .leading, spacing: 16) {
-                FeatureRow(icon: "infinity", title: "Unlimited Stows", description: "Bypass the 3-file free limit and stow as many files, folders, and links as you need simultaneously.")
+                FeatureRow(icon: "infinity", title: "Unlimited Stowws", description: "Bypass the 3-file free limit and stoww as many files, folders, and links as you need simultaneously.")
                 
                 FeatureRow(icon: "clock.badge.exclamationmark", title: "Advanced Retention", description: "Keep your files on the shelf indefinitely, or set exact custom expiration dates so they auto-clean themselves.")
                 
@@ -54,7 +54,7 @@ struct StowProView: View {
                         Image(systemName: "checkmark.seal.fill")
                             .foregroundColor(.green)
                             .font(.title2)
-                        Text("Stow Pro is Unlocked")
+                        Text("Stowww Pro is Unlocked")
                             .font(.headline)
                     }
                     .padding()
