@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stow - The minimal shelf for your Mac</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            900: '#0a0a0a',
+                            800: '#171717',
+                            700: '#262626',
+                        },
+                        brand: {
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #f5f5f5;
+        }
+        .glass-panel {
+            background: rgba(23, 23, 23, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #fff 0%, #a3a3a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand-gradient {
+            background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-white/5 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded bg-gradient-to-br from-yellow-300 to-orange-500 shadow-lg shadow-orange-500/20"></div>
+                <span class="font-semibold text-lg tracking-tight">Stow</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-neutral-400">
+                <a href="#features" class="hover:text-white transition-colors">Features</a>
+                <a href="#pro" class="hover:text-white transition-colors">Pro</a>
+                <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+            </div>
+            <a href="#install" class="bg-white text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-neutral-200 transition-colors">
+                Install Free
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-40 pb-20 overflow-hidden" id="install">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-500/10 rounded-full blur-[120px] -z-10"></div>
+        
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-neutral-300 mb-8 animate-fade-in-up" style="animation-delay: 0.1s;">
+                <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                v1.0 is now live for macOS
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 animate-fade-in-up text-gradient leading-tight" style="animation-delay: 0.2s;">
+                The minimal shelf<br/>for your Mac.
+            </h1>
+            
+            <p class="text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto mb-12 animate-fade-in-up" style="animation-delay: 0.3s;">
+                Stop cluttering your Desktop. Drag files to the edge of your screen, let them sit on the shelf, and drag them out when you need them. Zero duplicated storage space.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.4s;">
+                <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-4 border border-white/10 font-mono text-sm text-neutral-300 shadow-2xl">
+                    <span class="text-neutral-500">$</span>
+                    <span>brew install --cask stow</span>
+                    <button class="ml-4 text-neutral-500 hover:text-white transition-colors" onclick="navigator.clipboard.writeText('brew install --cask stow'); alert('Copied to clipboard!')" title="Copy to clipboard">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="py-32 relative">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 text-gradient">Designed for workflow purity.</h2>
+                <p class="text-neutral-400 text-lg max-w-2xl mx-auto">Every detail is engineered to keep your workspace clean without changing how you fundamentally use macOS.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <!-- Feature 1 -->
+                <div class="glass-panel p-10 rounded-3xl hover:-translate-y-1 transition-transform duration-300">
+                    <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-6 text-brand-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Zero Storage Footprint</h3>
+                    <p class="text-neutral-400 leading-relaxed">Unlike other clipboard managers, Stow <strong>does not use extra space</strong> to save your files or folders. It acts purely as a reference shelf. It remembers where your heavy 4K videos or project folders live without ever duplicating them on your hard drive.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="glass-panel p-10 rounded-3xl hover:-translate-y-1 transition-transform duration-300">
+                    <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-6 text-brand-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Auto-Cleaning Retention</h3>
+                    <p class="text-neutral-400 leading-relaxed">Files you don't need shouldn't stay on your shelf forever. Set Stow to automatically forget files after 1 day, 1 week, or keep them indefinitely. It cleans up its own mess so you don't have to.</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Feature 3 -->
+                <div class="glass-panel p-10 rounded-3xl hover:-translate-y-1 transition-transform duration-300">
+                    <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-6 text-brand-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Drag In, Drag Out</h3>
+                    <p class="text-neutral-400 leading-relaxed">Drag any file to the notch or the screen edge. Stow catches it instantly. Later, simply open the Stow window from your menu bar and drag those files exactly where you need to move them—be it a folder, an email, or Photoshop.</p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="glass-panel p-10 rounded-3xl hover:-translate-y-1 transition-transform duration-300">
+                    <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-6 text-brand-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Native & Lightweight</h3>
+                    <p class="text-neutral-400 leading-relaxed">Built from scratch in 100% native Swift and SwiftUI. It uses effectively zero CPU in the background, respects your battery life, and feels like a seamless part of the macOS ecosystem.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing / Comparison -->
+    <section id="pricing" class="py-20 relative bg-dark-800/30">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 text-gradient">Free vs Pro.</h2>
+                <p class="text-neutral-400 text-lg">Use Stow completely free, or unlock its full potential with a single lifetime purchase.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Free Tier -->
+                <div class="glass-panel p-10 rounded-3xl border border-white/10">
+                    <h3 class="text-2xl font-bold mb-2">Stow Free</h3>
+                    <p class="text-neutral-400 mb-8 pb-8 border-b border-white/10">Perfect for light usage and keeping just a few essential files handy while you work.</p>
+                    <ul class="space-y-5">
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-xs text-white">✓</div>
+                            <div>
+                                <span class="font-medium text-white block">3 File Limit</span>
+                                <span class="text-sm text-neutral-500">You can stow up to 3 active files or folders simultaneously.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-xs text-white">✓</div>
+                            <div>
+                                <span class="font-medium text-white block">Fixed 1-Day Retention</span>
+                                <span class="text-sm text-neutral-500">Files are automatically cleared from the shelf after 24 hours.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-xs text-white">✓</div>
+                            <div>
+                                <span class="font-medium text-white block">Standard UI</span>
+                                <span class="text-sm text-neutral-500">Access to the menu bar and notch drop zones.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Pro Tier -->
+                <div class="glass-panel p-10 rounded-3xl border-2 border-brand-500 relative overflow-hidden bg-brand-500/5">
+                    <div class="absolute top-0 right-0 bg-brand-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
+                        Lifetime Unlock
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold mb-2 brand-gradient">Stow Pro</h3>
+                    <p class="text-neutral-400 mb-8 pb-8 border-b border-white/10">Remove all limits and gain ultimate control over your macOS workflow.</p>
+                    <ul class="space-y-5">
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 w-5 h-5 rounded-full bg-brand-500 flex items-center justify-center text-xs text-white">✓</div>
+                            <div>
+                                <span class="font-medium text-white block">Unlimited Stows</span>
+                                <span class="text-sm text-neutral-400">Bypass the free limit. Stow as many files and folders as you need.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 w-5 h-5 rounded-full bg-brand-500 flex items-center justify-center text-xs text-white">✓</div>
+                            <div>
+                                <span class="font-medium text-white block">Custom Retention Controls</span>
+                                <span class="text-sm text-neutral-400">Keep files indefinitely ("Never"), or configure them to auto-clear after 1 week, 2 weeks, or a month.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="mt-1 w-5 h-5 rounded-full bg-brand-500 flex items-center justify-center text-xs text-white">✓</div>
+                            <div>
+                                <span class="font-medium text-white block">Use on 2 Personal Macs</span>
+                                <span class="text-sm text-neutral-400">Your license covers both your laptop and desktop.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How Pro Works & License Setup -->
+    <section id="pro" class="py-32 relative">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="glass-panel rounded-3xl p-8 md:p-12 border border-white/10">
+                <div class="flex flex-col md:flex-row gap-12 items-center">
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-bold mb-6 text-white">How to setup Stow Pro</h2>
+                        
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-brand-500">1</div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white">Download via Homebrew</h4>
+                                    <p class="text-neutral-400 mt-1">Open your terminal and run <code>brew install --cask stow</code>.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-brand-500">2</div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white">Open the App Settings</h4>
+                                    <p class="text-neutral-400 mt-1">Click the Stow icon in your Mac's menu bar, click the gear icon, and select <strong>"Upgrade to Stow Pro"</strong>.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-brand-500">3</div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white">Buy the License Key</h4>
+                                    <p class="text-neutral-400 mt-1">Purchase your lifetime license to instantly receive a unique key via email.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-brand-500">4</div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-white">Paste the Key to Activate</h4>
+                                    <p class="text-neutral-400 mt-1">Paste your key into the app's upgrade window to instantly unlock unlimited Stows.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 bg-black/50 p-6 rounded-2xl border border-white/5">
+                        <h4 class="text-lg font-bold mb-3 text-white flex items-center gap-2">
+                            <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            Flexible License Management
+                        </h4>
+                        <p class="text-sm text-neutral-300 mb-4 leading-relaxed">
+                            Your single license key can be activated on up to <strong>2 separate Macs</strong> simultaneously (perfect for your iMac and MacBook).
+                        </p>
+                        <p class="text-sm text-neutral-300 mb-4 leading-relaxed">
+                            <strong>Moving to a new Mac?</strong> It's easy. You can deactivate a machine at any time to free up a slot:
+                        </p>
+                        <ul class="text-sm text-neutral-400 space-y-2 list-disc pl-4">
+                            <li><strong>From the App:</strong> Click "Deactivate License" inside Stow's settings menu.</li>
+                            <li><strong>From the Web:</strong> Click the "Manage Order" link in your original email receipt to remotely deactivate any offline machine.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+</body>
+</html>
