@@ -1,6 +1,6 @@
 import Foundation
 
-struct LaterBinItem: Identifiable, Codable {
+struct StowItem: Identifiable, Codable {
     var id: UUID
     var displayName: String
     var bookmarkData: Data

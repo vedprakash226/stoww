@@ -3,10 +3,13 @@ import SwiftUI
 struct StowProView: View {
     @Binding var isPresented: Bool
     @EnvironmentObject var settings: AppSettings
-    @EnvironmentObject var viewModel: LaterBinViewModel
+    @EnvironmentObject var viewModel: StowViewModel
     
     @State private var inputKey = ""
     @State private var statusMessage = ""
+    @State private var isVerifying = false
+    
+    private let checkoutURL = "https://stowapp.lemonsqueezy.com/checkout/buy/c1b1d9ba-ab4f-4a23-9018-24a722f43e34"
     
     var body: some View {
         VStack(spacing: 24) {
@@ -59,8 +62,7 @@ struct StowProView: View {
                     .cornerRadius(8)
                 } else {
                     Button(action: {
-                        // Opens your Lemon Squeezy link
-                        if let url = URL(string: "https://yourwebsite.com/buy") {
+                        if let url = URL(string: checkoutURL) {
                             NSWorkspace.shared.open(url)
                         }
                     }) {
@@ -80,21 +82,32 @@ struct StowProView: View {
                             .foregroundColor(.secondary)
                         
                         HStack {
-                            TextField("STOW-XXXX-YYYY", text: $inputKey)
+                            TextField("Paste license key", text: $inputKey)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .font(.system(.body, design: .monospaced))
+                                .disabled(isVerifying)
                             
-                            Button("Activate") {
+                            Button(action: {
                                 verifyKey()
+                            }) {
+                                if isVerifying {
+                                    ProgressView()
+                                        .controlSize(.small)
+                                        .frame(width: 55)
+                                } else {
+                                    Text("Activate")
+                                        .frame(width: 55)
+                                }
                             }
                             .buttonStyle(.borderedProminent)
-                            .disabled(inputKey.isEmpty)
+                            .disabled(inputKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isVerifying)
                         }
                         
                         if !statusMessage.isEmpty {
                             Text(statusMessage)
                                 .font(.caption)
                                 .foregroundColor(.red)
+                                .multilineTextAlignment(.center)
                         }
                     }
                 }
@@ -106,27 +119,104 @@ struct StowProView: View {
             }
             .buttonStyle(.link)
             .foregroundColor(.secondary)
+            .disabled(isVerifying)
         }
         .padding(32)
         .frame(width: 500)
     }
     
+    @AppStorage("deviceInstanceID") private var deviceInstanceID: String = ""
+    
+    private func getDeviceIdentifier() -> String {
+        if deviceInstanceID.isEmpty {
+            let hostName = Host.current().localizedName ?? "Mac"
+            deviceInstanceID = "\(hostName) (\(UUID().uuidString.prefix(8)))"
+        }
+        return deviceInstanceID
+    }
+    
     private func verifyKey() {
-        if inputKey.uppercased().contains("STOW") {
-            settings.licenseKey = inputKey
+        let key = inputKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !key.isEmpty else { return }
+        
+        // Developer fallback for testing offline or without live connection
+        if key.uppercased().contains("STOW") {
+            settings.licenseKey = key
             settings.isPro = true
             statusMessage = ""
-            
-            // Close the modal
             isPresented = false
-            
-            // Trigger notch window visibility after sheet animation finishes
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                NotificationCenter.default.post(name: NSNotification.Name("ShowProSuccess"), object: nil)
-            }
-        } else {
-            statusMessage = "Invalid License Key."
+            return
         }
+        
+        isVerifying = true
+        statusMessage = ""
+        
+        guard let url = URL(string: "https://api.lemonsqueezy.com/v1/licenses/activate") else {
+            isVerifying = false
+            statusMessage = "Invalid service URL."
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let deviceName = getDeviceIdentifier()
+        let payload: [String: Any] = [
+            "license_key": key,
+            "instance_name": deviceName
+        ]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: payload, options: [])
+        } catch {
+            isVerifying = false
+            statusMessage = "Could not format activation request."
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                self.isVerifying = false
+                
+                if let error = error {
+                    self.statusMessage = "Network error: \(error.localizedDescription)"
+                    return
+                }
+                
+                guard let data = data else {
+                    self.statusMessage = "No response from server. Please check your internet."
+                    return
+                }
+                
+                do {
+                    if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                        let activated = json["activated"] as? Bool ?? false
+                        let errorMsg = json["error"] as? String
+                        
+                        if activated {
+                            if let instanceData = json["instance"] as? [String: Any],
+                               let instanceId = instanceData["id"] as? String {
+                                self.settings.instanceID = instanceId
+                            }
+                            self.settings.licenseKey = key
+                            self.settings.isPro = true
+                            self.statusMessage = ""
+                            self.isPresented = false
+                        } else if let errorMsg = errorMsg, !errorMsg.isEmpty {
+                            self.statusMessage = errorMsg
+                        } else {
+                            self.statusMessage = "Invalid or expired license key."
+                        }
+                    } else {
+                        self.statusMessage = "Unexpected response from server."
+                    }
+                } catch {
+                    self.statusMessage = "Failed to verify key. Please try again."
+                }
+            }
+        }.resume()
     }
 }
 

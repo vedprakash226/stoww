@@ -35,6 +35,7 @@ class AppSettings: ObservableObject {
     // Freemium State
     @AppStorage("isPro") var isPro: Bool = false
     @AppStorage("licenseKey") var licenseKey: String = ""
+    @AppStorage("instanceID") var instanceID: String = ""
     
     var defaultRetention: RetentionPeriod {
         if !isPro { return .oneDay }

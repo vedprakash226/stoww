@@ -3,12 +3,13 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 @MainActor
-class LaterBinViewModel: ObservableObject {
-    @Published var items: [LaterBinItem] = []
+class StowViewModel: ObservableObject {
+    @Published var items: [StowItem] = []
     @Published var isHovering = false
-    @Published var isEdgeTargeted = false
+    @Published var isNotchTargeted = false
+    @Published var isLeftTargeted = false
+    @Published var isRightTargeted = false
     @Published var showUpgradeModal = false
-    @Published var showProSuccess = false
     
     private let saveURL: URL
     
@@ -26,7 +27,7 @@ class LaterBinViewModel: ObservableObject {
     
     private func loadItems() {
         guard let data = try? Data(contentsOf: saveURL) else { return }
-        if let decoded = try? JSONDecoder().decode([LaterBinItem].self, from: data) {
+        if let decoded = try? JSONDecoder().decode([StowItem].self, from: data) {
             self.items = decoded.sorted(by: { $0.createdAt > $1.createdAt })
         }
     }
@@ -61,14 +62,14 @@ class LaterBinViewModel: ObservableObject {
         }
         
         if items.contains(where: { $0.lastKnownURL?.path == url.path }) {
-            print("Item already in LaterBin")
+            print("Item already in Stow")
             return
         }
         
         do {
             let bookmark = try FileReferenceService.shared.createBookmark(for: url)
             let isDir = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
-            let item = LaterBinItem(
+            let item = StowItem(
                 displayName: url.lastPathComponent,
                 bookmarkData: bookmark,
                 lastKnownURL: url,
@@ -83,7 +84,7 @@ class LaterBinViewModel: ObservableObject {
         }
     }
     
-    func remove(item: LaterBinItem) {
+    func remove(item: StowItem) {
         items.removeAll { $0.id == item.id }
         saveItems()
     }
@@ -114,5 +115,72 @@ class LaterBinViewModel: ObservableObject {
         }
         
         return false
+    }
+    
+    func deactivateLicense(settings: AppSettings) {
+        guard !settings.licenseKey.isEmpty, !settings.instanceID.isEmpty else {
+            // Wipe local state if missing data
+            settings.isPro = false
+            settings.licenseKey = ""
+            settings.instanceID = ""
+            return
+        }
+        
+        guard let url = URL(string: "https://api.lemonsqueezy.com/v1/licenses/deactivate") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let payload: [String: Any] = [
+            "license_key": settings.licenseKey,
+            "instance_id": settings.instanceID
+        ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: payload, options: [])
+        
+        URLSession.shared.dataTask(with: request) { _, _, _ in
+            DispatchQueue.main.async {
+                settings.isPro = false
+                settings.licenseKey = ""
+                settings.instanceID = ""
+                print("License successfully deactivated.")
+            }
+        }.resume()
+    }
+    
+    func validateLicenseSilently(settings: AppSettings) {
+        guard settings.isPro, !settings.licenseKey.isEmpty, !settings.instanceID.isEmpty else { return }
+        
+        guard let url = URL(string: "https://api.lemonsqueezy.com/v1/licenses/validate") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let payload: [String: Any] = [
+            "license_key": settings.licenseKey,
+            "instance_id": settings.instanceID
+        ]
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: payload, options: [])
+        
+        URLSession.shared.dataTask(with: request) { data, _, _ in
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+            
+            let valid = json["valid"] as? Bool ?? false
+            
+            DispatchQueue.main.async {
+                // If the license or this specific instance is no longer valid
+                if !valid {
+                    settings.isPro = false
+                    settings.instanceID = ""
+                    print("License invalidated remotely.")
+                }
+            }
+        }.resume()
     }
 }

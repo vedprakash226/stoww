@@ -2,15 +2,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "LaterBin",
+    name: "Stow",
     platforms: [
         .macOS(.v14)
     ],
     targets: [
         .executableTarget(
-            name: "LaterBin",
+            name: "Stow",
             dependencies: [],
-            path: "Sources/LaterBin"
+            path: "Sources/Stow"
         ),
     ]
 )

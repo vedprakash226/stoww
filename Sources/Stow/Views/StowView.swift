@@ -1,8 +1,8 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct LaterBinView: View {
-    @EnvironmentObject var viewModel: LaterBinViewModel
+struct StowView: View {
+    @EnvironmentObject var viewModel: StowViewModel
     @EnvironmentObject var settings: AppSettings
     
     var body: some View {
@@ -43,6 +43,15 @@ struct LaterBinView: View {
                             }
                         }
                         .pickerStyle(InlinePickerStyle())
+                        
+                        Divider()
+                        
+                        Button(action: {
+                            viewModel.deactivateLicense(settings: settings)
+                        }) {
+                            Text("Deactivate License...")
+                        }
+                        
                         Divider()
                     } else {
                         Button(action: { viewModel.showUpgradeModal = true }) {
@@ -68,7 +77,7 @@ struct LaterBinView: View {
                     Image(systemName: "power")
                 }
                 .buttonStyle(PlainButtonStyle())
-                .help("Quit LaterBin")
+                .help("Quit Stow")
             }
             .padding()
             .background(Color(NSColor.windowBackgroundColor))

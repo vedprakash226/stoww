@@ -3,8 +3,8 @@ import AppKit
 import UniformTypeIdentifiers
 
 struct ItemView: View {
-    @EnvironmentObject var viewModel: LaterBinViewModel
-    let item: LaterBinItem
+    @EnvironmentObject var viewModel: StowViewModel
+    let item: StowItem
     
     var body: some View {
         HStack {
@@ -41,7 +41,7 @@ struct ItemView: View {
             }
             .buttonStyle(PlainButtonStyle())
             .padding(.leading, 4)
-            .help("Remove from LaterBin")
+            .help("Remove from Stow")
         }
         .padding(.vertical, 4)
         .contentShape(Rectangle())
@@ -50,7 +50,7 @@ struct ItemView: View {
             if let url = try? FileReferenceService.shared.resolveBookmark(data: item.bookmarkData) {
                 provider.registerFileRepresentation(forTypeIdentifier: UTType.fileURL.identifier, fileOptions: [.openInPlace], visibility: .all) { completion in
                     completion(url, true, nil)
-                    // We remove it from LaterBin when it's dragged out successfully
+                    // We remove it from Stow when it's dragged out successfully
                     DispatchQueue.main.async {
                         viewModel.remove(item: item)
                     }
@@ -80,20 +80,20 @@ struct ItemView: View {
                 FileReferenceService.shared.revealInFinder(data: item.bookmarkData)
             }
             Divider()
-            Button("Remove from LaterBin") {
+            Button("Remove from Stow") {
                 viewModel.remove(item: item)
             }
         }
     }
     
-    private func icon(for item: LaterBinItem) -> NSImage {
+    private func icon(for item: StowItem) -> NSImage {
         guard let url = try? FileReferenceService.shared.resolveBookmark(data: item.bookmarkData) else {
             return NSWorkspace.shared.icon(for: .item)
         }
         return NSWorkspace.shared.icon(forFile: url.path)
     }
     
-    private func isAvailable(item: LaterBinItem) -> Bool {
+    private func isAvailable(item: StowItem) -> Bool {
         guard let url = try? FileReferenceService.shared.resolveBookmark(data: item.bookmarkData) else {
             return false
         }
